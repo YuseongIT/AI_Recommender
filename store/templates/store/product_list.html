@@ -1,34 +1,61 @@
+{% load product_filters %}
 <!DOCTYPE html>
 <html>
 <head>
     <title>AI Recommender Ecommerce</title>
 </head>
 <body>
-    <h1>Product List</h1>
+    <h1>AI Recommender Ecommerce</h1>
     
     <h2>All Products</h2>
-    <ul>
-        {% for product in products %}
-            <li>
-                <strong>{{ product.name }}</strong> - P{{ product.price }} <br>
-                <em>Tags: {{ product.tags }}</em> </li>
-        {% empty %}
-            <li>No products found.</li>
-        {% endfor %}
-    </ul>
+    {% for product in products %}
+        <div>
+            <strong>{{ product.name }}</strong>
+            {% if product.is_recommended %}
+                <span> (AI Recommended)</span>
+            {% endif %}
+            <br>
+            Price: ${{ product.price }}
+            {% if product.description %}
+                <br>{{ product.description }}
+            {% endif %}
+            {% if product.tags %}
+                <br>
+                Tags: 
+                {% for tag in product.tags|split:"," %}
+                    {{ tag|strip }}{% if not forloop.last %}, {% endif %}
+                {% endfor %}
+            {% endif %}
+            <br><br>
+        </div>
+    {% empty %}
+        <p>No products found. <a href="{% url 'add_product' %}">Add your first product!</a></p>
+    {% endfor %}
     
     <p><a href="{% url 'add_product' %}">Add New Product</a></p>
 
-    <h2>Recommended Products</h2>
-    <ul>
-        {% for product in recommendations %}
-            <li>
-                <strong>{{ product.name }}</strong> - P{{ product.price }} <br>
-                <em>Tags: {{ product.tags }}</em>
-            </li>
-        {% empty %}
-            <li>No recommendations yet. Add a premium product!</li>
-        {% endfor %}
-    </ul>
+    <h2>AI Recommended Products</h2>
+    {% for product in recommendations %}
+        <div>
+            <strong>{{ product.name }}</strong>
+            <span> (AI Recommended)</span>
+            <br>
+            Price: ${{ product.price }}
+            {% if product.description %}
+                <br>{{ product.description }}
+            {% endif %}
+            {% if product.tags %}
+                <br>
+                Tags: 
+                {% for tag in product.tags|split:"," %}
+                    {{ tag|strip }}{% if not forloop.last %}, {% endif %}
+                {% endfor %}
+            {% endif %}
+            <br><br>
+        </div>
+    {% empty %}
+        <p>No AI recommendations yet. Add some premium products to see recommendations!</p>
+        <p><a href="{% url 'add_product' %}">Add a Premium Product</a></p>
+    {% endfor %}
 </body>
 </html>
