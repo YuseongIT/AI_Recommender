@@ -25,11 +25,11 @@ sample_products = [
         'description': 'Enjoy a classic Korean delicacy right now!',
         'price': Decimal('89.00'),
         'tags': 'food, healthy',
-        'is_recommended': True
+        'is_recommended': False
     }
 ]
 
 for prod in sample_products:
     Product.objects.create(**prod)
 
-print("Data seeded successfully!")
+print("Data cleared and re-seeded with 2 recommendations successfully!")

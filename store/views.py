@@ -18,8 +18,8 @@ def product_list(request):
         if hasattr(p.price, 'to_decimal'):
             p.price = p.price.to_decimal()
     
-    # Filter for recommendations in memory
-    recommendations = [p for p in all_products if p.is_recommended]
+    # Filter for recommendations in memory and limit to exactly 2
+    recommendations = [p for p in all_products if p.is_recommended][:2]
     
     return render(request, 'store/product_list.html', {
         'products': all_products,
