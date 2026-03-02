@@ -9,20 +9,15 @@ from pymongo import MongoClient
 load_dotenv()
 openai.api_key = os.getenv("OPENAI_KEY")
 
-def get_mongo_collection():
-    client = MongoClient(os.getenv("MONGO_URI"))
-    db = client['ecommerce_db']
-    return db['store_product']
-
 def product_list(request):
-    # Use Django ORM to get products
-    products = Product.objects.all()
+    # Fetch all products and filter in Python to avoid djongo boolean filter bug
+    all_products = list(Product.objects.all())
     
-    # Get recommended products using is_recommended flag
-    recommendations = Product.objects.filter(is_recommended=True)
+    # Filter for recommendations in memory
+    recommendations = [p for p in all_products if p.is_recommended]
     
     return render(request, 'store/product_list.html', {
-        'products': products,
+        'products': all_products,
         'recommendations': recommendations
     })
 
