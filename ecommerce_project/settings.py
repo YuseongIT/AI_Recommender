@@ -59,7 +59,7 @@ DATABASES = {
         'NAME': 'ecommerce_db',
         'ENFORCE_SCHEMA': False,
         'CLIENT': {
-            'host': 'os.getenv("MONGO_URI")',
+            'host': os.getenv("MONGO_URI"),
         }
     }
 }
