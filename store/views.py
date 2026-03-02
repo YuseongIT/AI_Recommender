@@ -13,6 +13,11 @@ def product_list(request):
     # Fetch all products and filter in Python to avoid djongo boolean filter bug
     all_products = list(Product.objects.all())
     
+    # Convert Decimal128 to standard Decimal for template rendering
+    for p in all_products:
+        if hasattr(p.price, 'to_decimal'):
+            p.price = p.price.to_decimal()
+    
     # Filter for recommendations in memory
     recommendations = [p for p in all_products if p.is_recommended]
     
