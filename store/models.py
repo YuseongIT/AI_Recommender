@@ -6,6 +6,7 @@ class Product(models.Model):
     description = models.TextField()
     price = models.FloatField()
     category = models.CharField(max_length=50)
+    is_recommended = models.BooleanField(default=False)
 
     # Hello! I added this code snippet for the challenge task.
     tags = models.CharField(max_length=255, blank=True) 

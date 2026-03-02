@@ -1,16 +1,3 @@
-import os
-import openai
-from django.shortcuts import render, redirect
-from .forms import ProductForm
-from .models import Product
-
-# Load the API key from environment variables
-openai.api_key = os.getenv("OPENAI_KEY")
-
-def product_list(request):
-    products = Product.objects.all()
-    return render(request, 'store/product_list.html', {'products': products})
-
 def add_product(request):
     if request.method == 'POST':
         form = ProductForm(request.POST)
@@ -18,16 +5,28 @@ def add_product(request):
             product = form.save(commit=False)
     
             try:
-                prompt = f"Generate 3 short comma-separated tags for this product: {product.name}. Description: {product.description}"
-                response = openai.ChatCompletion.create(
+
+                tag_prompt = f"Generate 3 short comma-separated tags for: {product.name}"
+                tag_response = openai.ChatCompletion.create(
                     model="gpt-3.5-turbo",
-                    messages=[{"role": "user", "content": prompt}]
+                    messages=[{"role": "user", "content": tag_prompt}]
                 )
-        
-                product.tags = response.choices[0].message.content.strip()
+                product.tags = tag_response.choices[0].message.content.strip()
+
+  
+                rec_prompt = f"Is the product '{product.name}' highly rated or essential? Answer only 'Yes' or 'No'."
+                rec_response = openai.ChatCompletion.create(
+                    model="gpt-3.5-turbo",
+                    messages=[{"role": "user", "content": rec_prompt}]
+                )
+                
+    
+                if "Yes" in rec_response.choices[0].message.content:
+                    product.is_recommended = True
+                
             except Exception as e:
-                print(f"AI Tagging failed: {e}")
-                product.tags = "General" 
+                print(f"AI Logic failed: {e}")
+                product.tags = "General"
             
             product.save()
             return redirect('product_list')

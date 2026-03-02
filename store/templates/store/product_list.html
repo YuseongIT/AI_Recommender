@@ -9,16 +9,25 @@
     <h2>All Products</h2>
     <ul>
         {% for product in products %}
-            <li>{{ product.name }} - P{{ product.price }}</li>
+            <li>
+                <strong>{{ product.name }}</strong> - P{{ product.price }} <br>
+                <em>Tags: {{ product.tags }}</em> </li>
+        {% empty %}
+            <li>No products found.</li>
         {% endfor %}
     </ul>
     
-    <a href="{% url 'add_product' %}">Add New Product</a>
+    <p><a href="{% url 'add_product' %}">Add New Product</a></p>
 
     <h2>Recommended Products</h2>
     <ul>
         {% for product in recommendations %}
-            <li>{{ product.name }} - P{{ product.price }}</li>
+            <li>
+                <strong>{{ product.name }}</strong> - P{{ product.price }} <br>
+                <em>Tags: {{ product.tags }}</em>
+            </li>
+        {% empty %}
+            <li>No recommendations yet. Add a premium product!</li>
         {% endfor %}
     </ul>
 </body>
