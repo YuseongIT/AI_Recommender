@@ -53,15 +53,13 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'ecommerce_project.wsgi.application'
 
-# 4. FIXED DATABASE SECTION
-# It now correctly pulls from MONGO_URI
 DATABASES = {
     'default': {
         'ENGINE': 'djongo',
         'NAME': 'ecommerce_db',
         'ENFORCE_SCHEMA': False,
         'CLIENT': {
-            'host': os.getenv("MONGO_URI"),
+            'host': 'os.getenv("MONGO_URI")',
         }
     }
 }

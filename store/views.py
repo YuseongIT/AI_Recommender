@@ -15,13 +15,11 @@ def get_mongo_collection():
     return db['store_product']
 
 def product_list(request):
-    collection = get_mongo_collection()
+    # Use Django ORM to get products
+    products = Product.objects.all()
     
-    # Get all products
-    products = list(collection.find({}))
-    
-    # Get recommended products
-    recommendations = list(collection.find({"is_recommended": True}))
+    # Get recommended products using is_recommended flag
+    recommendations = Product.objects.filter(is_recommended=True)
     
     return render(request, 'store/product_list.html', {
         'products': products,
@@ -34,48 +32,32 @@ def add_product(request):
         if form.is_valid():
             product = form.save(commit=False)
             
-            # Enhanced AI Logic
+            # v0.28.1 OpenAI Logic
             try:
-                # Generate more specific tags based on product details
-                tag_prompt = f"""Generate 3-5 specific, relevant tags for this product:
-Name: {product.name}
-Description: {product.description}
-Price: ${product.price}
-
-Return only comma-separated tags like: electronics,premium,smart-home,wireless"""
+                # Generate 3 comma-separated tags
+                tag_prompt = f"Product Name: {product.name}\nDescription: {product.description}\n\nGenerate exactly 3 comma-separated tags for this product."
                 
                 tag_response = openai.ChatCompletion.create(
                     model="gpt-3.5-turbo",
                     messages=[
-                        {"role": "system", "content": "You are a product categorization expert. Generate concise, relevant tags for products."},
+                        {"role": "system", "content": "You are a helpful assistant that generates product tags."},
                         {"role": "user", "content": tag_prompt}
                     ],
-                    max_tokens=50,
+                    max_tokens=30,
                     temperature=0.7
                 )
                 product.tags = tag_response.choices[0].message.content.strip()
 
-                # Enhanced AI Recommendation Logic
-                rec_prompt = f"""Analyze this product and determine if it should be recommended:
-Name: {product.name}
-Description: {product.description}
-Price: ${product.price}
-
-Consider these factors:
-- Is it a premium/high-quality item?
-- Is the price above $50 (indicating quality)?
-- Does it have special features?
-- Would you personally recommend this to a friend?
-
-Answer with only 'Yes' or 'No'."""
+                # Decide if product should be recommended
+                rec_prompt = f"Product Name: {product.name}\nDescription: {product.description}\n\nShould this product be recommended? Answer 'Yes' or 'No' only."
                 
                 rec_response = openai.ChatCompletion.create(
                     model="gpt-3.5-turbo",
                     messages=[
-                        {"role": "system", "content": "You are a product recommendation expert. Evaluate products objectively."},
+                        {"role": "system", "content": "You decide if a product is worthy of recommendation."},
                         {"role": "user", "content": rec_prompt}
                     ],
-                    max_tokens=10,
+                    max_tokens=5,
                     temperature=0.3
                 )
                 
@@ -84,11 +66,10 @@ Answer with only 'Yes' or 'No'."""
                 
             except Exception as e:
                 print(f"AI Error: {e}")
-                # Fallback logic based on price
-                product.tags = "general"
-                product.is_recommended = product.price > 50
+                # Fallback
+                product.tags = "general,product,ecommerce"
+                product.is_recommended = False
             
-            # Save using Django ORM for consistency
             product.save()
             return redirect('product_list')
     else:

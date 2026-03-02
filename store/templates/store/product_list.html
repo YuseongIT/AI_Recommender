@@ -12,19 +12,16 @@
         <div>
             <strong>{{ product.name }}</strong>
             {% if product.is_recommended %}
-                <span> (AI Recommended)</span>
+                <span> (Recommended)</span>
             {% endif %}
             <br>
-            Price: ${{ product.price }}
+            Price: P{{ product.price|floatformat:2 }}
             {% if product.description %}
                 <br>{{ product.description }}
             {% endif %}
             {% if product.tags %}
                 <br>
-                Tags: 
-                {% for tag in product.tags|split:"," %}
-                    {{ tag|strip }}{% if not forloop.last %}, {% endif %}
-                {% endfor %}
+                Tags: {{ product.tags }}
             {% endif %}
             <br><br>
         </div>
@@ -34,27 +31,23 @@
     
     <p><a href="{% url 'add_product' %}">Add New Product</a></p>
 
-    <h2>AI Recommended Products</h2>
+    <h2>Recommended Products</h2>
     {% for product in recommendations %}
         <div>
             <strong>{{ product.name }}</strong>
-            <span> (AI Recommended)</span>
             <br>
-            Price: ${{ product.price }}
+            Price: P{{ product.price|floatformat:2 }}
             {% if product.description %}
                 <br>{{ product.description }}
             {% endif %}
             {% if product.tags %}
                 <br>
-                Tags: 
-                {% for tag in product.tags|split:"," %}
-                    {{ tag|strip }}{% if not forloop.last %}, {% endif %}
-                {% endfor %}
+                Tags: {{ product.tags }}
             {% endif %}
             <br><br>
         </div>
     {% empty %}
-        <p>No AI recommendations yet. Add some premium products to see recommendations!</p>
+        <p>No recommendations yet. Add some premium products to see recommendations!</p>
         <p><a href="{% url 'add_product' %}">Add a Premium Product</a></p>
     {% endfor %}
 </body>
