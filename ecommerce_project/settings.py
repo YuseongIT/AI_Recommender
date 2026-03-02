@@ -11,6 +11,8 @@ https://docs.djangoproject.com/en/6.0/ref/settings/
 """
 
 from pathlib import Path
+import os
+SECRET_KEY = os.getenv("DJANGO_SECRET", "eqs)o3%52=pam(7!i9+bf@x87zcb^xdsfordx^q0vve_x0v2by")
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -19,14 +21,14 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/6.0/howto/deployment/checklist/
 
-# SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-eu-_l$gg-9$ig4wic0!o-#zyl%l3j3b*)ip&wifc!o4^8l0z5j'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*', 'localhost', '127.0.0.1']
 
+OPENAI_KEY = os.getenv("OPENAI_KEY")
+MONGO_URI = os.getenv("MONGO_URI")
 
 # Application definition
 
