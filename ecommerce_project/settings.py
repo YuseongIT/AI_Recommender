@@ -12,6 +12,9 @@ https://docs.djangoproject.com/en/6.0/ref/settings/
 
 from pathlib import Path
 import os
+from dotenv import load_dotenv
+
+load_dotenv()
 SECRET_KEY = os.getenv("DJANGO_SECRET", "eqs)o3%52=pam(7!i9+bf@x87zcb^xdsfordx^q0vve_x0v2by")
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
